@@ -1,4 +1,4 @@
-// sync_mkdocs_readme.go copies the mkdocs index.md file and overwrites over the README.md. This script
+// main.go copies the mkdocs index.md file and overwrites over the README.md. This script
 // handles transforming the relative references into the correct references.
 
 package main
