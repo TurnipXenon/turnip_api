@@ -8,6 +8,7 @@
 
 protoc --twirp_out=. --go_out=. rpc/turnip/service.proto
 go get -u github.com/TurnipXenon/turnip_twirp/rpc/turnip@latest
+go get -u github.com/TurnipXenon/turnip_twirp/rpc/turnip@66742860fbf07fd14b927c88fab7a7083b6ffe75 <- more specific or stable
 
 go run github.com/TurnipXenon/turnip_twirp/dev/sync_mkdocs_readme
 go install github.com/TurnipXenon/turnip_twirp/dev/sync_mkdocs_readme@latest
