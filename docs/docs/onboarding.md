@@ -2,7 +2,11 @@
 
 ## Setup
 
--[ ] https://twitchtv.github.io/twirp/docs/install.html
+- [ ] https://twitchtv.github.io/twirp/docs/install.html
+- [ ] https://www.geeksforgeeks.org/how-to-install-protocol-buffers-on-windows/
+- [ ] https://github.com/golang/go/wiki/PackagePublishing
+
+protoc --twirp_out=. --go_out=. rpc/turnip/service.proto
 
 ## MKDocs
 
