@@ -6,6 +6,7 @@ option go_package = "rpc/turnip";
 import "google/protobuf/timestamp.proto";
 
 // todo documentation
+// todo refactor
 
 // Turnip handles all processes to internal services
 service Turnip {
@@ -14,6 +15,36 @@ service Turnip {
   rpc CreateContent(CreateContentRequest) returns (CreateContentResponse);
 }
 
+// region models
+message User {
+  string username = 1;
+}
+
+message Token {
+  string access_token = 1;
+  string username = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}
+
+message AccessDetails {
+  repeated string allowed_domains = 1;
+}
+
+message Content {
+  string title = 1;
+  string description = 2;
+  string content = 3;
+  optional string media = 4;
+  repeated string tag_list = 5;
+  AccessDetails access_details = 6;
+  map<string, string> meta = 7;
+  string primary_id = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+// endregion models
+
+// region request and responses
 message CreateUserRequest {
   string username = 1;
   string password = 2;
@@ -29,11 +60,8 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  string msg = 1;
-}
-
-message AccessDetails {
-  repeated string allowed_domains = 1;
+  Token token = 1;
+  User user = 2;
 }
 
 message CreateContentRequest {
@@ -57,3 +85,4 @@ message CreateContentResponse {
   string primary_id = 8;
   google.protobuf.Timestamp created_at = 9;
 }
+// endregion request and responses

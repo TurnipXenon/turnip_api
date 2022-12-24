@@ -7,6 +7,10 @@
 - [ ] https://github.com/golang/go/wiki/PackagePublishing
 
 protoc --twirp_out=. --go_out=. rpc/turnip/service.proto
+go get -u github.com/TurnipXenon/turnip_twirp/rpc/turnip
+
+go run github.com/TurnipXenon/turnip_twirp/dev/sync_mkdocs_readme
+go install github.com/TurnipXenon/turnip_twirp/dev/sync_mkdocs_readme@latest
 
 ## MKDocs
 
