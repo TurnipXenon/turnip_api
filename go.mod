@@ -1,4 +1,4 @@
-module github.com/TurnipXenon/turnip_twirp
+module github.com/TurnipXenon/turnip_api
 
 go 1.17
 

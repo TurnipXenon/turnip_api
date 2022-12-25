@@ -1,4 +1,4 @@
-# Turnip Twirp
+# Turnip API
 
 Twirp definition for Turnip.
 
