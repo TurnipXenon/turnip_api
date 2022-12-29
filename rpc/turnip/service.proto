@@ -42,6 +42,7 @@ message Content {
   map<string, string> meta = 7;
   string primary_id = 8;
   google.protobuf.Timestamp created_at = 9;
+  string author_id = 10;
 }
 // endregion models
 
