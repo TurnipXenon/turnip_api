@@ -18,11 +18,12 @@ service Turnip {
 // region models
 message User {
   string username = 1;
+  string primary_id = 2;
 }
 
 message Token {
   string access_token = 1;
-  string username = 2;
+  string username = 2; // special case; otherwise use uuid
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp expires_at = 4;
 }
