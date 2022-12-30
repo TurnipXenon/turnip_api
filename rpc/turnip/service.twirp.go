@@ -37,7 +37,18 @@ type Turnip interface {
 
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 
-	CreateContent(context.Context, *CreateContentRequest) (*CreateContentResponse, error)
+	CreateContent(context.Context, *ContentRequestResponse) (*ContentRequestResponse, error)
+
+	GetContentById(context.Context, *PrimaryIdRequest) (*ContentRequestResponse, error)
+
+	GetContentBatchById(context.Context, *PrimaryIdRequest) (*MultipleContentResponse, error)
+
+	GetAllContent(context.Context, *GetAllContentRequest) (*MultipleContentResponse, error)
+
+	// todo: GetAllContentByTag (make a tree like structure? is that possible?)
+	PutContent(context.Context, *ContentRequestResponse) (*ContentRequestResponse, error)
+
+	DeleteContent(context.Context, *PrimaryIdRequest) (*ContentRequestResponse, error)
 }
 
 // ======================
@@ -46,7 +57,7 @@ type Turnip interface {
 
 type turnipProtobufClient struct {
 	client      HTTPClient
-	urls        [3]string
+	urls        [8]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -74,10 +85,15 @@ func NewTurnipProtobufClient(baseURL string, client HTTPClient, opts ...twirp.Cl
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(pathPrefix, "turnipxenon.v1", "Turnip")
-	urls := [3]string{
+	urls := [8]string{
 		serviceURL + "CreateUser",
 		serviceURL + "Login",
 		serviceURL + "CreateContent",
+		serviceURL + "GetContentById",
+		serviceURL + "GetContentBatchById",
+		serviceURL + "GetAllContent",
+		serviceURL + "PutContent",
+		serviceURL + "DeleteContent",
 	}
 
 	return &turnipProtobufClient{
@@ -180,26 +196,26 @@ func (c *turnipProtobufClient) callLogin(ctx context.Context, in *LoginRequest) 
 	return out, nil
 }
 
-func (c *turnipProtobufClient) CreateContent(ctx context.Context, in *CreateContentRequest) (*CreateContentResponse, error) {
+func (c *turnipProtobufClient) CreateContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
 	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
 	ctx = ctxsetters.WithMethodName(ctx, "CreateContent")
 	caller := c.callCreateContent
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *CreateContentRequest) (*CreateContentResponse, error) {
+		caller = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*CreateContentRequest)
+					typedReq, ok := req.(*ContentRequestResponse)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*CreateContentRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
 					}
 					return c.callCreateContent(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*CreateContentResponse)
+				typedResp, ok := resp.(*ContentRequestResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*CreateContentResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -209,9 +225,239 @@ func (c *turnipProtobufClient) CreateContent(ctx context.Context, in *CreateCont
 	return caller(ctx, in)
 }
 
-func (c *turnipProtobufClient) callCreateContent(ctx context.Context, in *CreateContentRequest) (*CreateContentResponse, error) {
-	out := new(CreateContentResponse)
+func (c *turnipProtobufClient) callCreateContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
 	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipProtobufClient) GetContentById(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentById")
+	caller := c.callGetContentById
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callGetContentById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipProtobufClient) callGetContentById(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipProtobufClient) GetContentBatchById(ctx context.Context, in *PrimaryIdRequest) (*MultipleContentResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentBatchById")
+	caller := c.callGetContentBatchById
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*MultipleContentResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callGetContentBatchById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipProtobufClient) callGetContentBatchById(ctx context.Context, in *PrimaryIdRequest) (*MultipleContentResponse, error) {
+	out := new(MultipleContentResponse)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipProtobufClient) GetAllContent(ctx context.Context, in *GetAllContentRequest) (*MultipleContentResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllContent")
+	caller := c.callGetAllContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *GetAllContentRequest) (*MultipleContentResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*GetAllContentRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*GetAllContentRequest) when calling interceptor")
+					}
+					return c.callGetAllContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipProtobufClient) callGetAllContent(ctx context.Context, in *GetAllContentRequest) (*MultipleContentResponse, error) {
+	out := new(MultipleContentResponse)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipProtobufClient) PutContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "PutContent")
+	caller := c.callPutContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*ContentRequestResponse)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
+					}
+					return c.callPutContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipProtobufClient) callPutContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipProtobufClient) DeleteContent(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "DeleteContent")
+	caller := c.callDeleteContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callDeleteContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipProtobufClient) callDeleteContent(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -232,7 +478,7 @@ func (c *turnipProtobufClient) callCreateContent(ctx context.Context, in *Create
 
 type turnipJSONClient struct {
 	client      HTTPClient
-	urls        [3]string
+	urls        [8]string
 	interceptor twirp.Interceptor
 	opts        twirp.ClientOptions
 }
@@ -260,10 +506,15 @@ func NewTurnipJSONClient(baseURL string, client HTTPClient, opts ...twirp.Client
 	// Build method URLs: <baseURL>[<prefix>]/<package>.<Service>/<Method>
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(pathPrefix, "turnipxenon.v1", "Turnip")
-	urls := [3]string{
+	urls := [8]string{
 		serviceURL + "CreateUser",
 		serviceURL + "Login",
 		serviceURL + "CreateContent",
+		serviceURL + "GetContentById",
+		serviceURL + "GetContentBatchById",
+		serviceURL + "GetAllContent",
+		serviceURL + "PutContent",
+		serviceURL + "DeleteContent",
 	}
 
 	return &turnipJSONClient{
@@ -366,26 +617,26 @@ func (c *turnipJSONClient) callLogin(ctx context.Context, in *LoginRequest) (*Lo
 	return out, nil
 }
 
-func (c *turnipJSONClient) CreateContent(ctx context.Context, in *CreateContentRequest) (*CreateContentResponse, error) {
+func (c *turnipJSONClient) CreateContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
 	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
 	ctx = ctxsetters.WithMethodName(ctx, "CreateContent")
 	caller := c.callCreateContent
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *CreateContentRequest) (*CreateContentResponse, error) {
+		caller = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*CreateContentRequest)
+					typedReq, ok := req.(*ContentRequestResponse)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*CreateContentRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
 					}
 					return c.callCreateContent(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*CreateContentResponse)
+				typedResp, ok := resp.(*ContentRequestResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*CreateContentResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -395,9 +646,239 @@ func (c *turnipJSONClient) CreateContent(ctx context.Context, in *CreateContentR
 	return caller(ctx, in)
 }
 
-func (c *turnipJSONClient) callCreateContent(ctx context.Context, in *CreateContentRequest) (*CreateContentResponse, error) {
-	out := new(CreateContentResponse)
+func (c *turnipJSONClient) callCreateContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
 	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[2], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipJSONClient) GetContentById(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentById")
+	caller := c.callGetContentById
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callGetContentById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipJSONClient) callGetContentById(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[3], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipJSONClient) GetContentBatchById(ctx context.Context, in *PrimaryIdRequest) (*MultipleContentResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentBatchById")
+	caller := c.callGetContentBatchById
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*MultipleContentResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callGetContentBatchById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipJSONClient) callGetContentBatchById(ctx context.Context, in *PrimaryIdRequest) (*MultipleContentResponse, error) {
+	out := new(MultipleContentResponse)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[4], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipJSONClient) GetAllContent(ctx context.Context, in *GetAllContentRequest) (*MultipleContentResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllContent")
+	caller := c.callGetAllContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *GetAllContentRequest) (*MultipleContentResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*GetAllContentRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*GetAllContentRequest) when calling interceptor")
+					}
+					return c.callGetAllContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipJSONClient) callGetAllContent(ctx context.Context, in *GetAllContentRequest) (*MultipleContentResponse, error) {
+	out := new(MultipleContentResponse)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[5], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipJSONClient) PutContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "PutContent")
+	caller := c.callPutContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*ContentRequestResponse)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
+					}
+					return c.callPutContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipJSONClient) callPutContent(ctx context.Context, in *ContentRequestResponse) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[6], in, out)
+	if err != nil {
+		twerr, ok := err.(twirp.Error)
+		if !ok {
+			twerr = twirp.InternalErrorWith(err)
+		}
+		callClientError(ctx, c.opts.Hooks, twerr)
+		return nil, err
+	}
+
+	callClientResponseReceived(ctx, c.opts.Hooks)
+
+	return out, nil
+}
+
+func (c *turnipJSONClient) DeleteContent(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "turnipxenon.v1")
+	ctx = ctxsetters.WithServiceName(ctx, "Turnip")
+	ctx = ctxsetters.WithMethodName(ctx, "DeleteContent")
+	caller := c.callDeleteContent
+	if c.interceptor != nil {
+		caller = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := c.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return c.callDeleteContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+	return caller(ctx, in)
+}
+
+func (c *turnipJSONClient) callDeleteContent(ctx context.Context, in *PrimaryIdRequest) (*ContentRequestResponse, error) {
+	out := new(ContentRequestResponse)
+	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[7], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
 		if !ok {
@@ -517,6 +998,21 @@ func (s *turnipServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		return
 	case "CreateContent":
 		s.serveCreateContent(ctx, resp, req)
+		return
+	case "GetContentById":
+		s.serveGetContentById(ctx, resp, req)
+		return
+	case "GetContentBatchById":
+		s.serveGetContentBatchById(ctx, resp, req)
+		return
+	case "GetAllContent":
+		s.serveGetAllContent(ctx, resp, req)
+		return
+	case "PutContent":
+		s.servePutContent(ctx, resp, req)
+		return
+	case "DeleteContent":
+		s.serveDeleteContent(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -918,7 +1414,7 @@ func (s *turnipServer) serveCreateContentJSON(ctx context.Context, resp http.Res
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
 		return
 	}
-	reqContent := new(CreateContentRequest)
+	reqContent := new(ContentRequestResponse)
 	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
 	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
@@ -927,20 +1423,20 @@ func (s *turnipServer) serveCreateContentJSON(ctx context.Context, resp http.Res
 
 	handler := s.Turnip.CreateContent
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *CreateContentRequest) (*CreateContentResponse, error) {
+		handler = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*CreateContentRequest)
+					typedReq, ok := req.(*ContentRequestResponse)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*CreateContentRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
 					}
 					return s.Turnip.CreateContent(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*CreateContentResponse)
+				typedResp, ok := resp.(*ContentRequestResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*CreateContentResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -949,7 +1445,7 @@ func (s *turnipServer) serveCreateContentJSON(ctx context.Context, resp http.Res
 	}
 
 	// Call service method
-	var respContent *CreateContentResponse
+	var respContent *ContentRequestResponse
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -960,7 +1456,7 @@ func (s *turnipServer) serveCreateContentJSON(ctx context.Context, resp http.Res
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *CreateContentResponse and nil error while calling CreateContent. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling CreateContent. nil responses are not supported"))
 		return
 	}
 
@@ -1000,7 +1496,7 @@ func (s *turnipServer) serveCreateContentProtobuf(ctx context.Context, resp http
 		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
 		return
 	}
-	reqContent := new(CreateContentRequest)
+	reqContent := new(ContentRequestResponse)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
@@ -1008,20 +1504,20 @@ func (s *turnipServer) serveCreateContentProtobuf(ctx context.Context, resp http
 
 	handler := s.Turnip.CreateContent
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *CreateContentRequest) (*CreateContentResponse, error) {
+		handler = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*CreateContentRequest)
+					typedReq, ok := req.(*ContentRequestResponse)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*CreateContentRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
 					}
 					return s.Turnip.CreateContent(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*CreateContentResponse)
+				typedResp, ok := resp.(*ContentRequestResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*CreateContentResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -1030,7 +1526,7 @@ func (s *turnipServer) serveCreateContentProtobuf(ctx context.Context, resp http
 	}
 
 	// Call service method
-	var respContent *CreateContentResponse
+	var respContent *ContentRequestResponse
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -1041,7 +1537,907 @@ func (s *turnipServer) serveCreateContentProtobuf(ctx context.Context, resp http
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *CreateContentResponse and nil error while calling CreateContent. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling CreateContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetContentById(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveGetContentByIdJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveGetContentByIdProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *turnipServer) serveGetContentByIdJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentById")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Turnip.GetContentById
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.GetContentById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling GetContentById. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: !s.jsonCamelCase, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetContentByIdProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentById")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := io.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Turnip.GetContentById
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.GetContentById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling GetContentById. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetContentBatchById(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveGetContentBatchByIdJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveGetContentBatchByIdProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *turnipServer) serveGetContentBatchByIdJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentBatchById")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Turnip.GetContentBatchById
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*MultipleContentResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.GetContentBatchById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *MultipleContentResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *MultipleContentResponse and nil error while calling GetContentBatchById. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: !s.jsonCamelCase, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetContentBatchByIdProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetContentBatchById")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := io.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Turnip.GetContentBatchById
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*MultipleContentResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.GetContentBatchById(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *MultipleContentResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *MultipleContentResponse and nil error while calling GetContentBatchById. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetAllContent(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveGetAllContentJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveGetAllContentProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *turnipServer) serveGetAllContentJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(GetAllContentRequest)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Turnip.GetAllContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *GetAllContentRequest) (*MultipleContentResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*GetAllContentRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*GetAllContentRequest) when calling interceptor")
+					}
+					return s.Turnip.GetAllContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *MultipleContentResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *MultipleContentResponse and nil error while calling GetAllContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: !s.jsonCamelCase, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveGetAllContentProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := io.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(GetAllContentRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Turnip.GetAllContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *GetAllContentRequest) (*MultipleContentResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*GetAllContentRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*GetAllContentRequest) when calling interceptor")
+					}
+					return s.Turnip.GetAllContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*MultipleContentResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*MultipleContentResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *MultipleContentResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *MultipleContentResponse and nil error while calling GetAllContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) servePutContent(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.servePutContentJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.servePutContentProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *turnipServer) servePutContentJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "PutContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(ContentRequestResponse)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Turnip.PutContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*ContentRequestResponse)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
+					}
+					return s.Turnip.PutContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling PutContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: !s.jsonCamelCase, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) servePutContentProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "PutContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := io.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(ContentRequestResponse)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Turnip.PutContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *ContentRequestResponse) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*ContentRequestResponse)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*ContentRequestResponse) when calling interceptor")
+					}
+					return s.Turnip.PutContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling PutContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal proto response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveDeleteContent(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveDeleteContentJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveDeleteContentProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *turnipServer) serveDeleteContentJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "DeleteContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	d := json.NewDecoder(req.Body)
+	rawReqBody := json.RawMessage{}
+	if err := d.Decode(&rawReqBody); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
+	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
+		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
+		return
+	}
+
+	handler := s.Turnip.DeleteContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.DeleteContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling DeleteContent. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	marshaler := &protojson.MarshalOptions{UseProtoNames: !s.jsonCamelCase, EmitUnpopulated: !s.jsonSkipDefaults}
+	respBytes, err := marshaler.Marshal(respContent)
+	if err != nil {
+		s.writeError(ctx, resp, wrapInternal(err, "failed to marshal json response"))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Length", strconv.Itoa(len(respBytes)))
+	resp.WriteHeader(http.StatusOK)
+
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		ctx = callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *turnipServer) serveDeleteContentProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "DeleteContent")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := io.ReadAll(req.Body)
+	if err != nil {
+		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
+		return
+	}
+	reqContent := new(PrimaryIdRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
+		return
+	}
+
+	handler := s.Turnip.DeleteContent
+	if s.interceptor != nil {
+		handler = func(ctx context.Context, req *PrimaryIdRequest) (*ContentRequestResponse, error) {
+			resp, err := s.interceptor(
+				func(ctx context.Context, req interface{}) (interface{}, error) {
+					typedReq, ok := req.(*PrimaryIdRequest)
+					if !ok {
+						return nil, twirp.InternalError("failed type assertion req.(*PrimaryIdRequest) when calling interceptor")
+					}
+					return s.Turnip.DeleteContent(ctx, typedReq)
+				},
+			)(ctx, req)
+			if resp != nil {
+				typedResp, ok := resp.(*ContentRequestResponse)
+				if !ok {
+					return nil, twirp.InternalError("failed type assertion resp.(*ContentRequestResponse) when calling interceptor")
+				}
+				return typedResp, err
+			}
+			return nil, err
+		}
+	}
+
+	// Call service method
+	var respContent *ContentRequestResponse
+	func() {
+		defer ensurePanicResponses(ctx, resp, s.hooks)
+		respContent, err = handler(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *ContentRequestResponse and nil error while calling DeleteContent. nil responses are not supported"))
 		return
 	}
 
@@ -1646,48 +3042,56 @@ func callClientError(ctx context.Context, h *twirp.ClientHooks, err twirp.Error)
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 688 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0xcb, 0x6e, 0xd3, 0x4c,
-	0x14, 0xfe, 0x9d, 0xbb, 0x4f, 0x9a, 0xfe, 0x30, 0x6a, 0x25, 0xd7, 0x50, 0x91, 0x5a, 0x5c, 0x22,
-	0x21, 0x39, 0x22, 0x08, 0x51, 0xd8, 0xa5, 0x0d, 0x88, 0x8a, 0xb2, 0x31, 0x65, 0x83, 0x90, 0xa2,
-	0x69, 0x3c, 0x35, 0xa3, 0xda, 0x1e, 0x33, 0x33, 0xe9, 0x65, 0xc9, 0x8e, 0x87, 0x62, 0x0f, 0xef,
-	0xc2, 0x4b, 0x20, 0xcf, 0x8c, 0xdb, 0xc4, 0x94, 0xb6, 0x88, 0x8a, 0x45, 0x77, 0x39, 0xc7, 0xe7,
-	0xf6, 0x7d, 0xe7, 0x3b, 0xa3, 0x80, 0xc3, 0xb3, 0x49, 0x5f, 0x4e, 0x79, 0x4a, 0xb3, 0xbe, 0x20,
-	0xfc, 0x80, 0x4e, 0x88, 0x9f, 0x71, 0x26, 0x19, 0x5a, 0xd4, 0xde, 0x23, 0x92, 0xb2, 0xd4, 0x3f,
-	0x78, 0xe4, 0xde, 0x89, 0x18, 0x8b, 0x62, 0xd2, 0x57, 0x5f, 0x77, 0xa7, 0x7b, 0x7d, 0x49, 0x13,
-	0x22, 0x24, 0x4e, 0x32, 0x9d, 0xe0, 0x0d, 0xa1, 0xf6, 0x4e, 0x10, 0x8e, 0x5c, 0x68, 0x4d, 0x05,
-	0xe1, 0x29, 0x4e, 0x88, 0x63, 0x75, 0xad, 0x9e, 0x1d, 0x9c, 0xd8, 0x68, 0x15, 0x20, 0xe3, 0x34,
-	0xc1, 0xfc, 0x78, 0x4c, 0x43, 0xa7, 0xa2, 0xbe, 0xda, 0xc6, 0xb3, 0x15, 0x7a, 0x5f, 0x2d, 0xa8,
-	0xef, 0xb0, 0x7d, 0x92, 0xa2, 0x35, 0x58, 0xc0, 0x93, 0x09, 0x11, 0x62, 0x2c, 0x73, 0xdb, 0x14,
-	0x6a, 0x6b, 0x9f, 0x0e, 0x99, 0xed, 0x53, 0x29, 0xf5, 0x79, 0x06, 0x30, 0xe1, 0x04, 0x4b, 0x12,
-	0x8e, 0xb1, 0x74, 0xaa, 0x5d, 0xab, 0xd7, 0x1e, 0xb8, 0xbe, 0x46, 0xe0, 0x17, 0x08, 0xfc, 0x9d,
-	0x02, 0x41, 0x60, 0x9b, 0xe8, 0xa1, 0xcc, 0x53, 0xc9, 0x51, 0x46, 0x39, 0x11, 0x79, 0x6a, 0xed,
-	0xe2, 0x54, 0x13, 0x3d, 0x94, 0xde, 0x3a, 0x74, 0x86, 0x6a, 0xc0, 0x11, 0x91, 0x98, 0xc6, 0x02,
-	0x3d, 0x80, 0xff, 0x71, 0x1c, 0xb3, 0x43, 0x12, 0x8e, 0x43, 0x96, 0x60, 0x9a, 0x0a, 0xc7, 0xea,
-	0x56, 0x7b, 0x76, 0xb0, 0x68, 0xdc, 0x23, 0xed, 0xf5, 0xbe, 0x57, 0xa1, 0xb9, 0xc9, 0x52, 0x49,
-	0x52, 0x89, 0x96, 0xa0, 0x2e, 0xa9, 0x8c, 0x0b, 0xf2, 0xb4, 0x81, 0xba, 0xd0, 0x0e, 0x89, 0x98,
-	0x70, 0x9a, 0x49, 0xca, 0x52, 0x03, 0x78, 0xd6, 0x85, 0x1c, 0x68, 0x4e, 0x74, 0x09, 0x05, 0xd8,
-	0x0e, 0x0a, 0x13, 0xad, 0x40, 0x3d, 0x21, 0x21, 0xc5, 0x0a, 0x8d, 0xfd, 0xea, 0xbf, 0x40, 0x9b,
-	0x5f, 0x2c, 0x0b, 0xad, 0x40, 0x4b, 0xe2, 0x68, 0x1c, 0x53, 0x21, 0x9d, 0xba, 0x1a, 0xad, 0x29,
-	0x71, 0xb4, 0x4d, 0x85, 0x44, 0x23, 0x58, 0x34, 0x2b, 0x08, 0x35, 0x1c, 0xa7, 0xa1, 0xc8, 0x58,
-	0xf5, 0xe7, 0x95, 0xe1, 0xcf, 0x61, 0x0e, 0x3a, 0x78, 0x8e, 0x82, 0x27, 0x50, 0x4b, 0x88, 0xc4,
-	0x4e, 0xb3, 0x5b, 0xed, 0xb5, 0x07, 0x6b, 0xe5, 0x5c, 0x03, 0xda, 0x7f, 0x43, 0x24, 0x7e, 0x91,
-	0x4a, 0x7e, 0x1c, 0xa8, 0xf0, 0x92, 0x50, 0x5a, 0x25, 0xa1, 0x94, 0xf6, 0x6b, 0xff, 0xc9, 0x7e,
-	0x6f, 0x81, 0x8d, 0xa7, 0xf2, 0x23, 0xe3, 0x79, 0x61, 0xd0, 0xba, 0xd1, 0x8e, 0xad, 0xd0, 0x7d,
-	0x0a, 0xf6, 0xc9, 0x24, 0xe8, 0x06, 0x54, 0xf7, 0xc9, 0xb1, 0x59, 0x43, 0xfe, 0x33, 0x5f, 0xcd,
-	0x01, 0x8e, 0xa7, 0x85, 0xde, 0xb4, 0xf1, 0xbc, 0xb2, 0x6e, 0x6d, 0xb4, 0xa0, 0x31, 0x56, 0xa4,
-	0x7a, 0xaf, 0xe1, 0xe6, 0xa6, 0x6a, 0x96, 0x1f, 0x43, 0x40, 0x3e, 0x4d, 0x89, 0x90, 0xe7, 0xde,
-	0x84, 0x0b, 0xad, 0x0c, 0x0b, 0x71, 0xc8, 0x78, 0x71, 0x11, 0x27, 0xb6, 0x77, 0x1f, 0xd0, 0x6c,
-	0x31, 0x91, 0xb1, 0x54, 0x90, 0x7c, 0xb0, 0x44, 0x44, 0xc5, 0x60, 0x89, 0x88, 0xbc, 0x97, 0xb0,
-	0xb0, 0xcd, 0x22, 0x9a, 0xfe, 0x6d, 0xbf, 0x3d, 0xe8, 0x98, 0x3a, 0xa6, 0xd5, 0x43, 0xa8, 0x9f,
-	0x1e, 0x60, 0x7b, 0xb0, 0x5c, 0xde, 0x9f, 0x3a, 0xc5, 0x40, 0xc7, 0xa0, 0x1e, 0xd4, 0xf2, 0x2e,
-	0xaa, 0x6a, 0x7b, 0xb0, 0x54, 0x8e, 0x55, 0x18, 0x54, 0x84, 0xf7, 0xa3, 0x02, 0x4b, 0x1a, 0x98,
-	0x11, 0x40, 0x31, 0xf8, 0xf5, 0x12, 0xff, 0xc6, 0x9c, 0xf8, 0xfd, 0x5f, 0xc4, 0x7f, 0x06, 0x03,
-	0xe5, 0x4b, 0xb8, 0x0a, 0x49, 0x7e, 0xab, 0xc2, 0x72, 0xa9, 0x97, 0x59, 0xef, 0xf5, 0xa2, 0x7b,
-	0x73, 0x8e, 0xee, 0xfe, 0x05, 0x74, 0x6b, 0x0a, 0xfe, 0xdd, 0xcb, 0x73, 0x05, 0x9b, 0x1c, 0x7c,
-	0xae, 0x40, 0x63, 0x47, 0xa1, 0x42, 0x6f, 0x01, 0x4e, 0x9f, 0x06, 0xb4, 0x76, 0x36, 0xd8, 0x99,
-	0x37, 0xc8, 0xf5, 0xce, 0x0b, 0x31, 0x7a, 0x18, 0x41, 0x5d, 0xdd, 0x3f, 0xba, 0x5d, 0x0e, 0x9e,
-	0x7d, 0x5e, 0xdc, 0xd5, 0xdf, 0x7c, 0x35, 0x55, 0x3e, 0x40, 0x67, 0x8e, 0x6b, 0x74, 0xf7, 0x32,
-	0xca, 0x77, 0xef, 0x5d, 0x6a, 0x61, 0x1b, 0x0b, 0xef, 0xe1, 0xf4, 0x4f, 0xcb, 0x6e, 0x43, 0x71,
-	0xfe, 0xf8, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0xeb, 0x24, 0xe5, 0x24, 0xc9, 0x08, 0x00, 0x00,
+	// 801 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xeb, 0x6e, 0xf3, 0x44,
+	0x10, 0xc5, 0xcd, 0xd5, 0x93, 0x26, 0x5f, 0x59, 0x4a, 0xeb, 0x1a, 0x2a, 0x52, 0x0b, 0xb5, 0x91,
+	0x90, 0x1c, 0x35, 0x80, 0x28, 0xfc, 0x4b, 0x9a, 0x52, 0x2a, 0x5a, 0x51, 0x99, 0xf2, 0x83, 0x0a,
+	0x11, 0xb6, 0xf6, 0x36, 0x5d, 0xd5, 0x37, 0xbc, 0xeb, 0x5e, 0xde, 0x80, 0x87, 0xe2, 0x01, 0x78,
+	0x07, 0x5e, 0x06, 0x79, 0x77, 0x9d, 0xc4, 0x2e, 0x29, 0xe1, 0xf6, 0x2f, 0x3b, 0x7b, 0xe6, 0xcc,
+	0x9e, 0x99, 0x33, 0x56, 0xc0, 0x48, 0x62, 0xb7, 0xcf, 0xd3, 0x24, 0xa4, 0x71, 0x9f, 0x91, 0xe4,
+	0x81, 0xba, 0xc4, 0x8e, 0x93, 0x88, 0x47, 0xa8, 0x23, 0xa3, 0x4f, 0x24, 0x8c, 0x42, 0xfb, 0xe1,
+	0xd0, 0xfc, 0x60, 0x1a, 0x45, 0x53, 0x9f, 0xf4, 0xc5, 0xed, 0x4d, 0x7a, 0xdb, 0xe7, 0x34, 0x20,
+	0x8c, 0xe3, 0x20, 0x96, 0x09, 0xd6, 0x10, 0xaa, 0xdf, 0x31, 0x92, 0x20, 0x13, 0x9a, 0x29, 0x23,
+	0x49, 0x88, 0x03, 0x62, 0x68, 0x5d, 0xad, 0xa7, 0x3b, 0xb3, 0x33, 0xda, 0x05, 0x88, 0x13, 0x1a,
+	0xe0, 0xe4, 0x79, 0x42, 0x3d, 0x63, 0x4d, 0xdc, 0xea, 0x2a, 0x72, 0xe6, 0x59, 0xbf, 0x6a, 0x50,
+	0xbb, 0x8a, 0xee, 0x49, 0x88, 0xf6, 0x60, 0x1d, 0xbb, 0x2e, 0x61, 0x6c, 0xc2, 0xb3, 0xb3, 0x22,
+	0x6a, 0xc9, 0x98, 0x84, 0x2c, 0xd6, 0x59, 0x2b, 0xd5, 0xf9, 0x1c, 0xc0, 0x4d, 0x08, 0xe6, 0xc4,
+	0x9b, 0x60, 0x6e, 0x54, 0xba, 0x5a, 0xaf, 0x35, 0x30, 0x6d, 0xa9, 0xc0, 0xce, 0x15, 0xd8, 0x57,
+	0xb9, 0x02, 0x47, 0x57, 0xe8, 0x21, 0xcf, 0x52, 0xc9, 0x53, 0x4c, 0x13, 0xc2, 0xb2, 0xd4, 0xea,
+	0x5f, 0xa7, 0x2a, 0xf4, 0x90, 0x5b, 0x47, 0xd0, 0x1e, 0x8a, 0x07, 0x8e, 0x09, 0xc7, 0xd4, 0x67,
+	0xe8, 0x00, 0xde, 0x60, 0xdf, 0x8f, 0x1e, 0x89, 0x37, 0xf1, 0xa2, 0x00, 0xd3, 0x90, 0x19, 0x5a,
+	0xb7, 0xd2, 0xd3, 0x9d, 0x8e, 0x0a, 0x8f, 0x65, 0xd4, 0xfa, 0xad, 0x02, 0x8d, 0xe3, 0x28, 0xe4,
+	0x24, 0xe4, 0x68, 0x13, 0x6a, 0x9c, 0x72, 0x3f, 0x6f, 0x9e, 0x3c, 0xa0, 0x2e, 0xb4, 0x3c, 0xc2,
+	0xdc, 0x84, 0xc6, 0x9c, 0x46, 0xa1, 0x12, 0xbc, 0x18, 0x42, 0x06, 0x34, 0x5c, 0x49, 0x21, 0x04,
+	0xeb, 0x4e, 0x7e, 0x44, 0x3b, 0x50, 0x0b, 0x88, 0x47, 0xb1, 0x50, 0xa3, 0x7f, 0xf5, 0x96, 0x23,
+	0x8f, 0xbf, 0x68, 0x1a, 0xda, 0x81, 0x26, 0xc7, 0xd3, 0x89, 0x4f, 0x19, 0x37, 0x6a, 0xe2, 0x69,
+	0x0d, 0x8e, 0xa7, 0xe7, 0x94, 0x71, 0x34, 0x86, 0x8e, 0x1a, 0x81, 0x27, 0xe5, 0x18, 0x75, 0xd1,
+	0x8c, 0x5d, 0xbb, 0xe8, 0x0c, 0xbb, 0xa0, 0xd9, 0x69, 0xe3, 0x42, 0x0b, 0x3e, 0x85, 0x6a, 0x40,
+	0x38, 0x36, 0x1a, 0xdd, 0x4a, 0xaf, 0x35, 0xd8, 0x2b, 0xe7, 0x2a, 0xd1, 0xf6, 0x05, 0xe1, 0xf8,
+	0x24, 0xe4, 0xc9, 0xb3, 0x23, 0xe0, 0x25, 0xa3, 0x34, 0x4b, 0x46, 0x29, 0xcd, 0x57, 0xff, 0x3b,
+	0xf3, 0x7d, 0x0f, 0x74, 0x9c, 0xf2, 0xbb, 0x28, 0xc9, 0x88, 0x41, 0xfa, 0x46, 0x06, 0xce, 0x3c,
+	0xf3, 0x33, 0xd0, 0x67, 0x2f, 0x41, 0x1b, 0x50, 0xb9, 0x27, 0xcf, 0x6a, 0x0c, 0xd9, 0xcf, 0x6c,
+	0x34, 0x0f, 0xd8, 0x4f, 0x73, 0xbf, 0xc9, 0xc3, 0x17, 0x6b, 0x47, 0xda, 0xa8, 0x09, 0xf5, 0x89,
+	0x68, 0xaa, 0xf5, 0x35, 0xbc, 0x7d, 0x2c, 0x8a, 0x65, 0xcb, 0xe0, 0x90, 0x9f, 0x53, 0xc2, 0xf8,
+	0xab, 0x3b, 0x61, 0x42, 0x33, 0xc6, 0x8c, 0x3d, 0x46, 0x49, 0xbe, 0x11, 0xb3, 0xb3, 0xb5, 0x0f,
+	0x68, 0x91, 0x8c, 0xc5, 0x51, 0xc8, 0x48, 0xf6, 0xb0, 0x80, 0x4d, 0xf3, 0x87, 0x05, 0x6c, 0x6a,
+	0x7d, 0x09, 0xeb, 0xe7, 0xd1, 0x94, 0x86, 0xff, 0xb6, 0xde, 0x2d, 0xb4, 0x15, 0x8f, 0x2a, 0xf5,
+	0x11, 0xd4, 0xe6, 0x0b, 0xd8, 0x1a, 0xbc, 0x5b, 0x9e, 0x9f, 0x58, 0x45, 0x47, 0x62, 0x50, 0x0f,
+	0xaa, 0x59, 0x15, 0xc1, 0xda, 0x1a, 0x6c, 0x96, 0xb1, 0x42, 0x83, 0x40, 0x58, 0x27, 0xb0, 0xa5,
+	0x26, 0xaf, 0x5e, 0xbc, 0x50, 0xb0, 0x4a, 0x39, 0x09, 0x54, 0xbd, 0xed, 0x25, 0x7e, 0x71, 0x04,
+	0xc8, 0x3a, 0x84, 0x8d, 0xcb, 0xdc, 0x13, 0xb9, 0xf4, 0xa2, 0x73, 0xb4, 0xf2, 0x27, 0xe6, 0x04,
+	0xb6, 0x4e, 0x09, 0x57, 0x34, 0x23, 0x91, 0xf7, 0x4f, 0x2a, 0x6f, 0xc1, 0xe6, 0x29, 0xe1, 0x43,
+	0xdf, 0x2f, 0xca, 0xb0, 0xbe, 0x81, 0xed, 0x8b, 0xd4, 0xe7, 0x34, 0xf6, 0xc9, 0xec, 0x46, 0xf1,
+	0x7f, 0x02, 0x7a, 0x96, 0x2a, 0x77, 0x4d, 0x13, 0xeb, 0xb0, 0xb4, 0x48, 0x33, 0x43, 0x66, 0x5b,
+	0x68, 0x8d, 0xc0, 0xc8, 0x09, 0x5f, 0x48, 0xdd, 0x87, 0x37, 0x73, 0xa9, 0x73, 0x5e, 0xdd, 0x69,
+	0xcf, 0xf4, 0x66, 0x1c, 0x83, 0xdf, 0x6b, 0x50, 0xbf, 0x12, 0x85, 0xd0, 0xb7, 0x00, 0x73, 0x43,
+	0xa1, 0x97, 0xeb, 0x58, 0x76, 0xae, 0x69, 0xbd, 0x06, 0x51, 0xca, 0xc6, 0x50, 0x13, 0xae, 0x41,
+	0xef, 0x97, 0xc1, 0x8b, 0xa6, 0x34, 0x77, 0x97, 0xdc, 0x2a, 0x96, 0x09, 0xb4, 0x25, 0x77, 0xfe,
+	0x21, 0xdc, 0x5f, 0xd6, 0x9d, 0xa2, 0x65, 0xcc, 0x15, 0x71, 0xe8, 0x1a, 0x3a, 0xc5, 0xd1, 0xa3,
+	0x6e, 0x39, 0xb3, 0xdc, 0xe2, 0x95, 0xb9, 0x7f, 0x82, 0x77, 0x16, 0xb8, 0x31, 0x77, 0xef, 0x56,
+	0x2c, 0x70, 0x50, 0x46, 0x2c, 0xb3, 0xcf, 0x8f, 0xd0, 0x2e, 0x38, 0x0e, 0x7d, 0x58, 0xce, 0xfc,
+	0x33, 0x43, 0xae, 0xce, 0xff, 0x03, 0xc0, 0x65, 0xca, 0xff, 0xaf, 0xde, 0x7f, 0x0f, 0xed, 0x31,
+	0xf1, 0xc9, 0x7c, 0xb8, 0xff, 0x59, 0xeb, 0x47, 0xeb, 0xd7, 0x30, 0xff, 0x13, 0x73, 0x53, 0x17,
+	0x5f, 0xff, 0x8f, 0xff, 0x08, 0x00, 0x00, 0xff, 0xff, 0x15, 0x9e, 0xee, 0x81, 0xd9, 0x08, 0x00,
+	0x00,
 }
