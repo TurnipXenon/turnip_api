@@ -12,7 +12,16 @@ import "google/protobuf/timestamp.proto";
 service Turnip {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
-  rpc CreateContent(CreateContentRequest) returns (CreateContentResponse);
+
+  // region Content
+  rpc CreateContent(ContentRequestResponse) returns (ContentRequestResponse);
+  rpc GetContentById(PrimaryIdRequest) returns (ContentRequestResponse);
+  rpc GetContentBatchById(PrimaryIdRequest) returns (MultipleContentResponse);
+  rpc GetAllContent(GetAllContentRequest) returns (MultipleContentResponse);
+  // todo: GetAllContentByTag (make a tree like structure? is that possible?)
+  rpc PutContent(ContentRequestResponse) returns (ContentRequestResponse);
+  rpc DeleteContent(PrimaryIdRequest) returns (ContentRequestResponse);
+  // endregion Content
 }
 
 // region models
@@ -66,25 +75,26 @@ message LoginResponse {
   User user = 2;
 }
 
-message CreateContentRequest {
-  string title = 1;
-  string description = 2;
-  string content = 3;
-  optional string media = 4;
-  repeated string tag_list = 5;
-  AccessDetails access_details = 6;
-  map<string, string> meta = 7;
+message ContentRequestResponse {
+  Content item = 1;
 }
 
-message CreateContentResponse {
-  string title = 1;
-  string description = 2;
-  string content = 3;
-  optional string media = 4;
-  repeated string tag_list = 5;
-  AccessDetails access_details = 6;
-  map<string, string> meta = 7;
-  string primary_id = 8;
-  google.protobuf.Timestamp created_at = 9;
+message PrimaryIdRequest {
+  string primary_id = 1;
 }
+
+message GetContentByIdResponse {
+  Content item = 1;
+}
+
+message GetAllContentRequest {}
+
+message MultipleContentResponse {
+  repeated Content item_list = 1;
+}
+
+message MultiplePrimaryIdRequest {
+  repeated string primary_id_list = 1;
+}
+
 // endregion request and responses
