@@ -7,6 +7,9 @@
 - [ ] https://github.com/golang/go/wiki/PackagePublishing
 
 protoc --twirp_out=. --go_out=. rpc/turnip/service.proto
+
+npx protoc --ts_out ts --proto_path=. --ts_opt generate_dependencies rpc/turnip/service.proto
+
 go get -u github.com/TurnipXenon/turnip_api/rpc/turnip@latest
 go get -u github.com/TurnipXenon/turnip_api/rpc/turnip@66742860fbf07fd14b927c88fab7a7083b6ffe75 <- more specific or stable
 
