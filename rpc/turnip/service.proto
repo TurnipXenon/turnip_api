@@ -19,7 +19,7 @@ service Turnip {
   rpc GetContentBatchById(PrimaryIdRequest) returns (MultipleContentResponse);
   rpc GetAllContent(GetAllContentRequest) returns (MultipleContentResponse);
   // todo: GetAllContentByTag (make a tree like structure? is that possible?)
-  rpc PutContent(ContentRequestResponse) returns (ContentRequestResponse);
+  rpc UpdateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc DeleteContent(PrimaryIdRequest) returns (ContentRequestResponse);
   // endregion Content
 }
