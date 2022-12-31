@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Generated typescript client code for turnip",
   "main": "ts/rpc/turnip/service.client.js",
+  "types": "ts/rpc/turnip/service.client.d.ts",
   "directories": {
     "doc": "docs"
   },
@@ -12,7 +13,9 @@
     "typescript": "^3.9.10"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
   },
   "repository": {
     "type": "git",

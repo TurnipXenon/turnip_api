@@ -21,6 +21,5 @@ docker/dynamodb
 # IDE
 .vscode
 .idea
-node_modules
-*.js
+node_modules # todo: idk if this is should be here
 
