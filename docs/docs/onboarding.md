@@ -6,6 +6,8 @@
 - [ ] https://www.geeksforgeeks.org/how-to-install-protocol-buffers-on-windows/
 - [ ] https://github.com/golang/go/wiki/PackagePublishing
 
+**make generate**
+
 protoc --twirp_out=. --go_out=. rpc/turnip/service.proto
 
 npx protoc --ts_out ts --proto_path=. --ts_opt generate_dependencies rpc/turnip/service.proto
