@@ -22,5 +22,3 @@ docker/dynamodb
 .vscode
 .idea
 node_modules
-*.js
-
