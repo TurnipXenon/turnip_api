@@ -833,7 +833,8 @@ exports.Turnip = new runtime_rpc_1.ServiceType("turnipxenon.v1.Turnip", [
     { name: "GetContentById", options: {}, I: exports.PrimaryIdRequest, O: exports.ContentRequestResponse },
     { name: "GetContentBatchById", options: {}, I: exports.PrimaryIdRequest, O: exports.MultipleContentResponse },
     { name: "GetAllContent", options: {}, I: exports.GetAllContentRequest, O: exports.MultipleContentResponse },
-    { name: "GetContentsByTag", options: {}, I: exports.GetContentsByTagRequest, O: exports.MultipleContentResponse },
+    { name: "GetContentsByTagInclusive", options: {}, I: exports.GetContentsByTagRequest, O: exports.MultipleContentResponse },
+    { name: "GetContentsByTagStrict", options: {}, I: exports.GetContentsByTagRequest, O: exports.MultipleContentResponse },
     { name: "UpdateContent", options: {}, I: exports.ContentRequestResponse, O: exports.ContentRequestResponse },
     { name: "DeleteContent", options: {}, I: exports.PrimaryIdRequest, O: exports.ContentRequestResponse }
 ]);

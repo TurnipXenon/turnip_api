@@ -34,8 +34,6 @@ export interface ITurnipClient {
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse>;
     /**
-     * region Content
-     *
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     createContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
@@ -52,9 +50,17 @@ export interface ITurnipClient {
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
     /**
-     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     * inclusive or, will return contents with at least one of the tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagInclusive(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
-    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    getContentsByTagInclusive(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    /**
+     * strict and, will only return contents with the following tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagStrict(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTagStrict(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
@@ -62,8 +68,6 @@ export interface ITurnipClient {
      */
     updateContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
     /**
-     * endregion Content
-     *
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
@@ -97,8 +101,6 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
         return stackIntercept<LoginRequest, LoginResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * region Content
-     *
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     createContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse> {
@@ -127,10 +129,21 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
         return stackIntercept<GetAllContentRequest, MultipleContentResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     * inclusive or, will return contents with at least one of the tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagInclusive(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
-    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse> {
+    getContentsByTagInclusive(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse> {
         const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetContentsByTagRequest, MultipleContentResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * strict and, will only return contents with the following tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagStrict(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTagStrict(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse> {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetContentsByTagRequest, MultipleContentResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -139,16 +152,14 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
      * @generated from protobuf rpc: UpdateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     updateContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse> {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return stackIntercept<ContentRequestResponse, ContentRequestResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * endregion Content
-     *
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse> {
-        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<PrimaryIdRequest, ContentRequestResponse>("unary", this._transport, method, opt, input);
     }
 }

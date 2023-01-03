@@ -26,8 +26,6 @@ export interface ITurnipClient {
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse>;
     /**
-     * region Content
-     *
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     createContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
@@ -44,9 +42,17 @@ export interface ITurnipClient {
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
     /**
-     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     * inclusive or, will return contents with at least one of the tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagInclusive(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
-    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    getContentsByTagInclusive(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    /**
+     * strict and, will only return contents with the following tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagStrict(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTagStrict(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
@@ -54,8 +60,6 @@ export interface ITurnipClient {
      */
     updateContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
     /**
-     * endregion Content
-     *
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
@@ -82,8 +86,6 @@ export declare class TurnipClient implements ITurnipClient, ServiceInfo {
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse>;
     /**
-     * region Content
-     *
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     createContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
@@ -100,9 +102,17 @@ export declare class TurnipClient implements ITurnipClient, ServiceInfo {
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
     /**
-     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     * inclusive or, will return contents with at least one of the tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagInclusive(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
-    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    getContentsByTagInclusive(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
+    /**
+     * strict and, will only return contents with the following tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagStrict(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTagStrict(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
@@ -110,8 +120,6 @@ export declare class TurnipClient implements ITurnipClient, ServiceInfo {
      */
     updateContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse>;
     /**
-     * endregion Content
-     *
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;

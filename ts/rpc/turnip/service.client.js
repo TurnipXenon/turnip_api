@@ -32,8 +32,6 @@ class TurnipClient {
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
-     * region Content
-     *
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     createContent(input, options) {
@@ -62,10 +60,21 @@ class TurnipClient {
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     * inclusive or, will return contents with at least one of the tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagInclusive(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
-    getContentsByTag(input, options) {
+    getContentsByTagInclusive(input, options) {
         const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
+     * strict and, will only return contents with the following tags
+     *
+     * @generated from protobuf rpc: GetContentsByTagStrict(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTagStrict(input, options) {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
@@ -74,16 +83,14 @@ class TurnipClient {
      * @generated from protobuf rpc: UpdateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     updateContent(input, options) {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
-     * endregion Content
-     *
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input, options) {
-        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
 }
