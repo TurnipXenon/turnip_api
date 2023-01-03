@@ -1,5 +1,6 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
+import type { GetContentsByTagRequest } from "./service";
 import type { GetAllContentRequest } from "./service";
 import type { MultipleContentResponse } from "./service";
 import type { PrimaryIdRequest } from "./service";
@@ -42,6 +43,10 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: GetAllContent(turnipxenon.v1.GetAllContentRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
+    /**
+     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
@@ -94,6 +99,10 @@ export declare class TurnipClient implements ITurnipClient, ServiceInfo {
      * @generated from protobuf rpc: GetAllContent(turnipxenon.v1.GetAllContentRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
+    /**
+     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
