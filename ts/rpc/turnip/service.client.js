@@ -62,12 +62,19 @@ class TurnipClient {
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTag(input, options) {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
+    }
+    /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
      * @generated from protobuf rpc: UpdateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     updateContent(input, options) {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
     /**
@@ -76,7 +83,7 @@ class TurnipClient {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input, options) {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
 }

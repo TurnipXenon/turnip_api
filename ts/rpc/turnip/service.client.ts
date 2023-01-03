@@ -4,6 +4,7 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Turnip } from "./service";
+import type { GetContentsByTagRequest } from "./service";
 import type { GetAllContentRequest } from "./service";
 import type { MultipleContentResponse } from "./service";
 import type { PrimaryIdRequest } from "./service";
@@ -50,6 +51,10 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: GetAllContent(turnipxenon.v1.GetAllContentRequest) returns (turnipxenon.v1.MultipleContentResponse);
      */
     getAllContent(input: GetAllContentRequest, options?: RpcOptions): UnaryCall<GetAllContentRequest, MultipleContentResponse>;
+    /**
+     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse>;
     /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
@@ -122,12 +127,19 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
         return stackIntercept<GetAllContentRequest, MultipleContentResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: GetContentsByTag(turnipxenon.v1.GetContentsByTagRequest) returns (turnipxenon.v1.MultipleContentResponse);
+     */
+    getContentsByTag(input: GetContentsByTagRequest, options?: RpcOptions): UnaryCall<GetContentsByTagRequest, MultipleContentResponse> {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetContentsByTagRequest, MultipleContentResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * todo: GetAllContentByTag (make a tree like structure? is that possible?)
      *
      * @generated from protobuf rpc: UpdateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
     updateContent(input: ContentRequestResponse, options?: RpcOptions): UnaryCall<ContentRequestResponse, ContentRequestResponse> {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return stackIntercept<ContentRequestResponse, ContentRequestResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -136,7 +148,7 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse> {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return stackIntercept<PrimaryIdRequest, ContentRequestResponse>("unary", this._transport, method, opt, input);
     }
 }

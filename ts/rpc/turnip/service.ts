@@ -205,6 +205,15 @@ export interface MultiplePrimaryIdRequest {
      */
     primaryIdList: string[];
 }
+/**
+ * @generated from protobuf message turnipxenon.v1.GetContentsByTagRequest
+ */
+export interface GetContentsByTagRequest {
+    /**
+     * @generated from protobuf field: repeated string tag_list = 1;
+     */
+    tagList: string[];
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class User$Type extends MessageType<User> {
     constructor() {
@@ -970,6 +979,53 @@ class MultiplePrimaryIdRequest$Type extends MessageType<MultiplePrimaryIdRequest
  * @generated MessageType for protobuf message turnipxenon.v1.MultiplePrimaryIdRequest
  */
 export const MultiplePrimaryIdRequest = new MultiplePrimaryIdRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetContentsByTagRequest$Type extends MessageType<GetContentsByTagRequest> {
+    constructor() {
+        super("turnipxenon.v1.GetContentsByTagRequest", [
+            { no: 1, name: "tag_list", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetContentsByTagRequest>): GetContentsByTagRequest {
+        const message = { tagList: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetContentsByTagRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContentsByTagRequest): GetContentsByTagRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated string tag_list */ 1:
+                    message.tagList.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetContentsByTagRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated string tag_list = 1; */
+        for (let i = 0; i < message.tagList.length; i++)
+            writer.tag(1, WireType.LengthDelimited).string(message.tagList[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message turnipxenon.v1.GetContentsByTagRequest
+ */
+export const GetContentsByTagRequest = new GetContentsByTagRequest$Type();
 /**
  * @generated ServiceType for protobuf service turnipxenon.v1.Turnip
  */
@@ -980,6 +1036,7 @@ export const Turnip = new ServiceType("turnipxenon.v1.Turnip", [
     { name: "GetContentById", options: {}, I: PrimaryIdRequest, O: ContentRequestResponse },
     { name: "GetContentBatchById", options: {}, I: PrimaryIdRequest, O: MultipleContentResponse },
     { name: "GetAllContent", options: {}, I: GetAllContentRequest, O: MultipleContentResponse },
+    { name: "GetContentsByTag", options: {}, I: GetContentsByTagRequest, O: MultipleContentResponse },
     { name: "UpdateContent", options: {}, I: ContentRequestResponse, O: ContentRequestResponse },
     { name: "DeleteContent", options: {}, I: PrimaryIdRequest, O: ContentRequestResponse }
 ]);

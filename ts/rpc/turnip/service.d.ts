@@ -198,6 +198,15 @@ export interface MultiplePrimaryIdRequest {
      */
     primaryIdList: string[];
 }
+/**
+ * @generated from protobuf message turnipxenon.v1.GetContentsByTagRequest
+ */
+export interface GetContentsByTagRequest {
+    /**
+     * @generated from protobuf field: repeated string tag_list = 1;
+     */
+    tagList: string[];
+}
 declare class User$Type extends MessageType<User> {
     constructor();
     create(value?: PartialMessage<User>): User;
@@ -339,6 +348,16 @@ declare class MultiplePrimaryIdRequest$Type extends MessageType<MultiplePrimaryI
  * @generated MessageType for protobuf message turnipxenon.v1.MultiplePrimaryIdRequest
  */
 export declare const MultiplePrimaryIdRequest: MultiplePrimaryIdRequest$Type;
+declare class GetContentsByTagRequest$Type extends MessageType<GetContentsByTagRequest> {
+    constructor();
+    create(value?: PartialMessage<GetContentsByTagRequest>): GetContentsByTagRequest;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContentsByTagRequest): GetContentsByTagRequest;
+    internalBinaryWrite(message: GetContentsByTagRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message turnipxenon.v1.GetContentsByTagRequest
+ */
+export declare const GetContentsByTagRequest: GetContentsByTagRequest$Type;
 /**
  * @generated ServiceType for protobuf service turnipxenon.v1.Turnip
  */
