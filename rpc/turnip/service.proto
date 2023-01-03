@@ -13,16 +13,17 @@ service Turnip {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
 
-  // region Content
   rpc CreateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc GetContentById(PrimaryIdRequest) returns (ContentRequestResponse);
   rpc GetContentBatchById(PrimaryIdRequest) returns (MultipleContentResponse);
   rpc GetAllContent(GetAllContentRequest) returns (MultipleContentResponse);
-  rpc GetContentsByTag(GetContentsByTagRequest) returns (MultipleContentResponse);
+  // inclusive or, will return contents with at least one of the tags
+  rpc GetContentsByTagInclusive(GetContentsByTagRequest) returns (MultipleContentResponse);
+  // strict and, will only return contents with the following tags
+  rpc GetContentsByTagStrict(GetContentsByTagRequest) returns (MultipleContentResponse);
   // todo: GetAllContentByTag (make a tree like structure? is that possible?)
   rpc UpdateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc DeleteContent(PrimaryIdRequest) returns (ContentRequestResponse);
-  // endregion Content
 }
 
 // region models

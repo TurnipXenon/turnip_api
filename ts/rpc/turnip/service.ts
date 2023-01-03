@@ -1036,7 +1036,8 @@ export const Turnip = new ServiceType("turnipxenon.v1.Turnip", [
     { name: "GetContentById", options: {}, I: PrimaryIdRequest, O: ContentRequestResponse },
     { name: "GetContentBatchById", options: {}, I: PrimaryIdRequest, O: MultipleContentResponse },
     { name: "GetAllContent", options: {}, I: GetAllContentRequest, O: MultipleContentResponse },
-    { name: "GetContentsByTag", options: {}, I: GetContentsByTagRequest, O: MultipleContentResponse },
+    { name: "GetContentsByTagInclusive", options: {}, I: GetContentsByTagRequest, O: MultipleContentResponse },
+    { name: "GetContentsByTagStrict", options: {}, I: GetContentsByTagRequest, O: MultipleContentResponse },
     { name: "UpdateContent", options: {}, I: ContentRequestResponse, O: ContentRequestResponse },
     { name: "DeleteContent", options: {}, I: PrimaryIdRequest, O: ContentRequestResponse }
 ]);
