@@ -8,6 +8,8 @@ const runtime_rpc_1 = require("@protobuf-ts/runtime-rpc");
 /**
  * Turnip handles all processes to internal services
  *
+ * user
+ *
  * @generated from protobuf service turnipxenon.v1.Turnip
  */
 class TurnipClient {
@@ -31,6 +33,7 @@ class TurnipClient {
         const method = this.methods[1], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
+    // content
     /**
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
@@ -91,6 +94,14 @@ class TurnipClient {
      */
     deleteContent(input, options) {
         const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
+    }
+    // potato
+    /**
+     * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
+     */
+    revalidateStaticPath(input, options) {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
 }
