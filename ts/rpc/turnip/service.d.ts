@@ -207,6 +207,24 @@ export interface GetContentsByTagRequest {
      */
     tagList: string[];
 }
+/**
+ * @generated from protobuf message turnipxenon.v1.RevalidateStaticPathRequest
+ */
+export interface RevalidateStaticPathRequest {
+    /**
+     * @generated from protobuf field: string path = 1;
+     */
+    path: string;
+}
+/**
+ * @generated from protobuf message turnipxenon.v1.RevalidateStaticPathResponse
+ */
+export interface RevalidateStaticPathResponse {
+    /**
+     * @generated from protobuf field: string message = 1;
+     */
+    message: string;
+}
 declare class User$Type extends MessageType<User> {
     constructor();
     create(value?: PartialMessage<User>): User;
@@ -358,6 +376,26 @@ declare class GetContentsByTagRequest$Type extends MessageType<GetContentsByTagR
  * @generated MessageType for protobuf message turnipxenon.v1.GetContentsByTagRequest
  */
 export declare const GetContentsByTagRequest: GetContentsByTagRequest$Type;
+declare class RevalidateStaticPathRequest$Type extends MessageType<RevalidateStaticPathRequest> {
+    constructor();
+    create(value?: PartialMessage<RevalidateStaticPathRequest>): RevalidateStaticPathRequest;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RevalidateStaticPathRequest): RevalidateStaticPathRequest;
+    internalBinaryWrite(message: RevalidateStaticPathRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message turnipxenon.v1.RevalidateStaticPathRequest
+ */
+export declare const RevalidateStaticPathRequest: RevalidateStaticPathRequest$Type;
+declare class RevalidateStaticPathResponse$Type extends MessageType<RevalidateStaticPathResponse> {
+    constructor();
+    create(value?: PartialMessage<RevalidateStaticPathResponse>): RevalidateStaticPathResponse;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RevalidateStaticPathResponse): RevalidateStaticPathResponse;
+    internalBinaryWrite(message: RevalidateStaticPathResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message turnipxenon.v1.RevalidateStaticPathResponse
+ */
+export declare const RevalidateStaticPathResponse: RevalidateStaticPathResponse$Type;
 /**
  * @generated ServiceType for protobuf service turnipxenon.v1.Turnip
  */

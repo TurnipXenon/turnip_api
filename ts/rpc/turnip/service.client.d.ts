@@ -1,5 +1,7 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
+import type { RevalidateStaticPathResponse } from "./service";
+import type { RevalidateStaticPathRequest } from "./service";
 import type { GetContentsByTagRequest } from "./service";
 import type { GetAllContentRequest } from "./service";
 import type { MultipleContentResponse } from "./service";
@@ -13,6 +15,8 @@ import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
 /**
  * Turnip handles all processes to internal services
+ *
+ * user
  *
  * @generated from protobuf service turnipxenon.v1.Turnip
  */
@@ -63,9 +67,15 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
+    /**
+     * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
+     */
+    revalidateStaticPath(input: RevalidateStaticPathRequest, options?: RpcOptions): UnaryCall<RevalidateStaticPathRequest, RevalidateStaticPathResponse>;
 }
 /**
  * Turnip handles all processes to internal services
+ *
+ * user
  *
  * @generated from protobuf service turnipxenon.v1.Turnip
  */
@@ -123,4 +133,8 @@ export declare class TurnipClient implements ITurnipClient, ServiceInfo {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
+    /**
+     * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
+     */
+    revalidateStaticPath(input: RevalidateStaticPathRequest, options?: RpcOptions): UnaryCall<RevalidateStaticPathRequest, RevalidateStaticPathResponse>;
 }

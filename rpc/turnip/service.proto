@@ -10,8 +10,12 @@ import "google/protobuf/timestamp.proto";
 
 // Turnip handles all processes to internal services
 service Turnip {
+  // user
+
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
+
+  // content
 
   rpc CreateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc GetContentById(PrimaryIdRequest) returns (ContentRequestResponse);
@@ -24,6 +28,10 @@ service Turnip {
   // todo: GetAllContentByTag (make a tree like structure? is that possible?)
   rpc UpdateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc DeleteContent(PrimaryIdRequest) returns (ContentRequestResponse);
+
+  // potato
+
+  rpc RevalidateStaticPath(RevalidateStaticPathRequest) returns (RevalidateStaticPathResponse);
 }
 
 // region models
@@ -101,6 +109,14 @@ message MultiplePrimaryIdRequest {
 
 message GetContentsByTagRequest {
   repeated string tag_list = 1;
+}
+
+message RevalidateStaticPathRequest {
+  string path = 1;
+}
+
+message RevalidateStaticPathResponse {
+  string message = 1;
 }
 
 // endregion request and responses

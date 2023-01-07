@@ -4,6 +4,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Turnip } from "./service";
+import type { RevalidateStaticPathResponse } from "./service";
+import type { RevalidateStaticPathRequest } from "./service";
 import type { GetContentsByTagRequest } from "./service";
 import type { GetAllContentRequest } from "./service";
 import type { MultipleContentResponse } from "./service";
@@ -22,6 +24,8 @@ import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
 /**
  * Turnip handles all processes to internal services
  *
+ * user
+ *
  * @generated from protobuf service turnipxenon.v1.Turnip
  */
 export interface ITurnipClient {
@@ -33,6 +37,8 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: Login(turnipxenon.v1.LoginRequest) returns (turnipxenon.v1.LoginResponse);
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse>;
+    // content
+
     /**
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
@@ -71,12 +77,20 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
+    // potato
+
+    /**
+     * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
+     */
+    revalidateStaticPath(input: RevalidateStaticPathRequest, options?: RpcOptions): UnaryCall<RevalidateStaticPathRequest, RevalidateStaticPathResponse>;
 }
 // todo documentation
 // todo refactor
 
 /**
  * Turnip handles all processes to internal services
+ *
+ * user
  *
  * @generated from protobuf service turnipxenon.v1.Turnip
  */
@@ -100,6 +114,8 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
         const method = this.methods[1], opt = this._transport.mergeOptions(options);
         return stackIntercept<LoginRequest, LoginResponse>("unary", this._transport, method, opt, input);
     }
+    // content
+
     /**
      * @generated from protobuf rpc: CreateContent(turnipxenon.v1.ContentRequestResponse) returns (turnipxenon.v1.ContentRequestResponse);
      */
@@ -161,5 +177,14 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse> {
         const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<PrimaryIdRequest, ContentRequestResponse>("unary", this._transport, method, opt, input);
+    }
+    // potato
+
+    /**
+     * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
+     */
+    revalidateStaticPath(input: RevalidateStaticPathRequest, options?: RpcOptions): UnaryCall<RevalidateStaticPathRequest, RevalidateStaticPathResponse> {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept<RevalidateStaticPathRequest, RevalidateStaticPathResponse>("unary", this._transport, method, opt, input);
     }
 }
