@@ -171,6 +171,15 @@ export interface PrimaryIdRequest {
     primaryId: string;
 }
 /**
+ * @generated from protobuf message turnipxenon.v1.GetContentBySlugRequest
+ */
+export interface GetContentBySlugRequest {
+    /**
+     * @generated from protobuf field: string slug = 1;
+     */
+    slug: string;
+}
+/**
  * @generated from protobuf message turnipxenon.v1.GetContentByIdResponse
  */
 export interface GetContentByIdResponse {
@@ -330,6 +339,16 @@ declare class PrimaryIdRequest$Type extends MessageType<PrimaryIdRequest> {
  * @generated MessageType for protobuf message turnipxenon.v1.PrimaryIdRequest
  */
 export declare const PrimaryIdRequest: PrimaryIdRequest$Type;
+declare class GetContentBySlugRequest$Type extends MessageType<GetContentBySlugRequest> {
+    constructor();
+    create(value?: PartialMessage<GetContentBySlugRequest>): GetContentBySlugRequest;
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContentBySlugRequest): GetContentBySlugRequest;
+    internalBinaryWrite(message: GetContentBySlugRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter;
+}
+/**
+ * @generated MessageType for protobuf message turnipxenon.v1.GetContentBySlugRequest
+ */
+export declare const GetContentBySlugRequest: GetContentBySlugRequest$Type;
 declare class GetContentByIdResponse$Type extends MessageType<GetContentByIdResponse> {
     constructor();
     create(value?: PartialMessage<GetContentByIdResponse>): GetContentByIdResponse;

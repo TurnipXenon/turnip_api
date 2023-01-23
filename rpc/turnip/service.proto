@@ -28,6 +28,7 @@ service Turnip {
   // todo: GetAllContentByTag (make a tree like structure? is that possible?)
   rpc UpdateContent(ContentRequestResponse) returns (ContentRequestResponse);
   rpc DeleteContent(PrimaryIdRequest) returns (ContentRequestResponse);
+  rpc GetContentBySlug(GetContentBySlugRequest) returns (ContentRequestResponse);
 
   // potato
 
@@ -92,6 +93,10 @@ message ContentRequestResponse {
 
 message PrimaryIdRequest {
   string primary_id = 1;
+}
+
+message GetContentBySlugRequest {
+  string slug = 1;
 }
 
 message GetContentByIdResponse {
