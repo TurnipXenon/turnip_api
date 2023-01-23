@@ -62,6 +62,7 @@ message Content {
   string primary_id = 8;
   google.protobuf.Timestamp created_at = 9;
   string author_id = 10;
+  string slug = 11;
 }
 // endregion models
 

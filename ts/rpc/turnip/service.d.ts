@@ -97,6 +97,10 @@ export interface Content {
      * @generated from protobuf field: string author_id = 10;
      */
     authorId: string;
+    /**
+     * @generated from protobuf field: string slug = 11;
+     */
+    slug: string;
 }
 /**
  * region request and responses
