@@ -6,6 +6,7 @@ import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Turnip } from "./service";
 import type { RevalidateStaticPathResponse } from "./service";
 import type { RevalidateStaticPathRequest } from "./service";
+import type { GetContentBySlugRequest } from "./service";
 import type { GetContentsByTagRequest } from "./service";
 import type { GetAllContentRequest } from "./service";
 import type { MultipleContentResponse } from "./service";
@@ -77,6 +78,10 @@ export interface ITurnipClient {
      * @generated from protobuf rpc: DeleteContent(turnipxenon.v1.PrimaryIdRequest) returns (turnipxenon.v1.ContentRequestResponse);
      */
     deleteContent(input: PrimaryIdRequest, options?: RpcOptions): UnaryCall<PrimaryIdRequest, ContentRequestResponse>;
+    /**
+     * @generated from protobuf rpc: GetContentBySlug(turnipxenon.v1.GetContentBySlugRequest) returns (turnipxenon.v1.ContentRequestResponse);
+     */
+    getContentBySlug(input: GetContentBySlugRequest, options?: RpcOptions): UnaryCall<GetContentBySlugRequest, ContentRequestResponse>;
     // potato
 
     /**
@@ -178,13 +183,20 @@ export class TurnipClient implements ITurnipClient, ServiceInfo {
         const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<PrimaryIdRequest, ContentRequestResponse>("unary", this._transport, method, opt, input);
     }
+    /**
+     * @generated from protobuf rpc: GetContentBySlug(turnipxenon.v1.GetContentBySlugRequest) returns (turnipxenon.v1.ContentRequestResponse);
+     */
+    getContentBySlug(input: GetContentBySlugRequest, options?: RpcOptions): UnaryCall<GetContentBySlugRequest, ContentRequestResponse> {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetContentBySlugRequest, ContentRequestResponse>("unary", this._transport, method, opt, input);
+    }
     // potato
 
     /**
      * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
      */
     revalidateStaticPath(input: RevalidateStaticPathRequest, options?: RpcOptions): UnaryCall<RevalidateStaticPathRequest, RevalidateStaticPathResponse> {
-        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
         return stackIntercept<RevalidateStaticPathRequest, RevalidateStaticPathResponse>("unary", this._transport, method, opt, input);
     }
 }

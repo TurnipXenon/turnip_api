@@ -96,12 +96,19 @@ class TurnipClient {
         const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
+    /**
+     * @generated from protobuf rpc: GetContentBySlug(turnipxenon.v1.GetContentBySlugRequest) returns (turnipxenon.v1.ContentRequestResponse);
+     */
+    getContentBySlug(input, options) {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
+    }
     // potato
     /**
      * @generated from protobuf rpc: RevalidateStaticPath(turnipxenon.v1.RevalidateStaticPathRequest) returns (turnipxenon.v1.RevalidateStaticPathResponse);
      */
     revalidateStaticPath(input, options) {
-        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
         return runtime_rpc_1.stackIntercept("unary", this._transport, method, opt, input);
     }
 }
