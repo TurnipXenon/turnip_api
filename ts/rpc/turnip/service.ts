@@ -104,6 +104,10 @@ export interface Content {
      * @generated from protobuf field: string author_id = 10;
      */
     authorId: string;
+    /**
+     * @generated from protobuf field: string slug = 11;
+     */
+    slug: string;
 }
 /**
  * region request and responses
@@ -414,11 +418,12 @@ class Content$Type extends MessageType<Content> {
             { no: 7, name: "meta", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } },
             { no: 8, name: "primary_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Content>): Content {
-        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "" };
+        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "", slug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Content>(this, message, value);
@@ -458,6 +463,9 @@ class Content$Type extends MessageType<Content> {
                     break;
                 case /* string author_id */ 10:
                     message.authorId = reader.string();
+                    break;
+                case /* string slug */ 11:
+                    message.slug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -517,6 +525,9 @@ class Content$Type extends MessageType<Content> {
         /* string author_id = 10; */
         if (message.authorId !== "")
             writer.tag(10, WireType.LengthDelimited).string(message.authorId);
+        /* string slug = 11; */
+        if (message.slug !== "")
+            writer.tag(11, WireType.LengthDelimited).string(message.slug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

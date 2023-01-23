@@ -193,11 +193,12 @@ class Content$Type extends runtime_5.MessageType {
             { no: 7, name: "meta", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } },
             { no: 8, name: "primary_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "created_at", kind: "message", T: () => timestamp_1.Timestamp },
-            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value) {
-        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "" };
+        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "", slug: "" };
         globalThis.Object.defineProperty(message, runtime_4.MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             runtime_3.reflectionMergePartial(this, message, value);
@@ -237,6 +238,9 @@ class Content$Type extends runtime_5.MessageType {
                     break;
                 case /* string author_id */ 10:
                     message.authorId = reader.string();
+                    break;
+                case /* string slug */ 11:
+                    message.slug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -296,6 +300,9 @@ class Content$Type extends runtime_5.MessageType {
         /* string author_id = 10; */
         if (message.authorId !== "")
             writer.tag(10, runtime_1.WireType.LengthDelimited).string(message.authorId);
+        /* string slug = 11; */
+        if (message.slug !== "")
+            writer.tag(11, runtime_1.WireType.LengthDelimited).string(message.slug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? runtime_2.UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
