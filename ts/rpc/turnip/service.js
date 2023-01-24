@@ -194,11 +194,12 @@ class Content$Type extends runtime_5.MessageType {
             { no: 8, name: "primary_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "created_at", kind: "message", T: () => timestamp_1.Timestamp },
             { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 11, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 11, name: "slug", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 12, name: "placeholder", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value) {
-        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "", slug: "" };
+        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "" };
         globalThis.Object.defineProperty(message, runtime_4.MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             runtime_3.reflectionMergePartial(this, message, value);
@@ -239,8 +240,11 @@ class Content$Type extends runtime_5.MessageType {
                 case /* string author_id */ 10:
                     message.authorId = reader.string();
                     break;
-                case /* string slug */ 11:
+                case /* optional string slug */ 11:
                     message.slug = reader.string();
+                    break;
+                case /* optional string placeholder */ 12:
+                    message.placeholder = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -300,9 +304,12 @@ class Content$Type extends runtime_5.MessageType {
         /* string author_id = 10; */
         if (message.authorId !== "")
             writer.tag(10, runtime_1.WireType.LengthDelimited).string(message.authorId);
-        /* string slug = 11; */
-        if (message.slug !== "")
+        /* optional string slug = 11; */
+        if (message.slug !== undefined)
             writer.tag(11, runtime_1.WireType.LengthDelimited).string(message.slug);
+        /* optional string placeholder = 12; */
+        if (message.placeholder !== undefined)
+            writer.tag(12, runtime_1.WireType.LengthDelimited).string(message.placeholder);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? runtime_2.UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

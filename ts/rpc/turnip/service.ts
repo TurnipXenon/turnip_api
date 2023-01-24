@@ -105,9 +105,13 @@ export interface Content {
      */
     authorId: string;
     /**
-     * @generated from protobuf field: string slug = 11;
+     * @generated from protobuf field: optional string slug = 11;
      */
-    slug: string;
+    slug?: string;
+    /**
+     * @generated from protobuf field: optional string placeholder = 12;
+     */
+    placeholder?: string; // todo: reserve 12 to not break future versions
 }
 /**
  * region request and responses
@@ -428,11 +432,12 @@ class Content$Type extends MessageType<Content> {
             { no: 8, name: "primary_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "created_at", kind: "message", T: () => Timestamp },
             { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 11, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 11, name: "slug", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 12, name: "placeholder", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Content>): Content {
-        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "", slug: "" };
+        const message = { title: "", description: "", content: "", tagList: [], meta: {}, primaryId: "", authorId: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Content>(this, message, value);
@@ -473,8 +478,11 @@ class Content$Type extends MessageType<Content> {
                 case /* string author_id */ 10:
                     message.authorId = reader.string();
                     break;
-                case /* string slug */ 11:
+                case /* optional string slug */ 11:
                     message.slug = reader.string();
+                    break;
+                case /* optional string placeholder */ 12:
+                    message.placeholder = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -534,9 +542,12 @@ class Content$Type extends MessageType<Content> {
         /* string author_id = 10; */
         if (message.authorId !== "")
             writer.tag(10, WireType.LengthDelimited).string(message.authorId);
-        /* string slug = 11; */
-        if (message.slug !== "")
+        /* optional string slug = 11; */
+        if (message.slug !== undefined)
             writer.tag(11, WireType.LengthDelimited).string(message.slug);
+        /* optional string placeholder = 12; */
+        if (message.placeholder !== undefined)
+            writer.tag(12, WireType.LengthDelimited).string(message.placeholder);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
