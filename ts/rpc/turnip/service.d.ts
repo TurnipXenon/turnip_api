@@ -98,9 +98,13 @@ export interface Content {
      */
     authorId: string;
     /**
-     * @generated from protobuf field: string slug = 11;
+     * @generated from protobuf field: optional string slug = 11;
      */
-    slug: string;
+    slug?: string;
+    /**
+     * @generated from protobuf field: optional string placeholder = 12;
+     */
+    placeholder?: string;
 }
 /**
  * region request and responses
