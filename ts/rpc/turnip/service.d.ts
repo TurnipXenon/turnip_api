@@ -76,9 +76,9 @@ export interface Content {
      */
     tagList: string[];
     /**
-     * @generated from protobuf field: turnipxenon.v1.AccessDetails access_details = 6;
+     * @generated from protobuf field: optional string slug = 6;
      */
-    accessDetails?: AccessDetails;
+    slug?: string;
     /**
      * @generated from protobuf field: map<string, string> meta = 7;
      */
@@ -97,14 +97,6 @@ export interface Content {
      * @generated from protobuf field: string author_id = 10;
      */
     authorId: string;
-    /**
-     * @generated from protobuf field: optional string slug = 11;
-     */
-    slug?: string;
-    /**
-     * @generated from protobuf field: optional string placeholder = 12;
-     */
-    placeholder?: string;
 }
 /**
  * region request and responses
