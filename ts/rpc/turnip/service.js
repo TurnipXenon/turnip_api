@@ -189,13 +189,11 @@ class Content$Type extends runtime_5.MessageType {
             { no: 3, name: "content", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "media", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "tag_list", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
-            { no: 6, name: "access_details", kind: "message", T: () => exports.AccessDetails },
+            { no: 6, name: "slug", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "meta", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } },
             { no: 8, name: "primary_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "created_at", kind: "message", T: () => timestamp_1.Timestamp },
-            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 11, name: "slug", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 12, name: "placeholder", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "author_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value) {
@@ -225,8 +223,8 @@ class Content$Type extends runtime_5.MessageType {
                 case /* repeated string tag_list */ 5:
                     message.tagList.push(reader.string());
                     break;
-                case /* turnipxenon.v1.AccessDetails access_details */ 6:
-                    message.accessDetails = exports.AccessDetails.internalBinaryRead(reader, reader.uint32(), options, message.accessDetails);
+                case /* optional string slug */ 6:
+                    message.slug = reader.string();
                     break;
                 case /* map<string, string> meta */ 7:
                     this.binaryReadMap7(message.meta, reader, options);
@@ -239,12 +237,6 @@ class Content$Type extends runtime_5.MessageType {
                     break;
                 case /* string author_id */ 10:
                     message.authorId = reader.string();
-                    break;
-                case /* optional string slug */ 11:
-                    message.slug = reader.string();
-                    break;
-                case /* optional string placeholder */ 12:
-                    message.placeholder = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -289,9 +281,9 @@ class Content$Type extends runtime_5.MessageType {
         /* repeated string tag_list = 5; */
         for (let i = 0; i < message.tagList.length; i++)
             writer.tag(5, runtime_1.WireType.LengthDelimited).string(message.tagList[i]);
-        /* turnipxenon.v1.AccessDetails access_details = 6; */
-        if (message.accessDetails)
-            exports.AccessDetails.internalBinaryWrite(message.accessDetails, writer.tag(6, runtime_1.WireType.LengthDelimited).fork(), options).join();
+        /* optional string slug = 6; */
+        if (message.slug !== undefined)
+            writer.tag(6, runtime_1.WireType.LengthDelimited).string(message.slug);
         /* map<string, string> meta = 7; */
         for (let k of Object.keys(message.meta))
             writer.tag(7, runtime_1.WireType.LengthDelimited).fork().tag(1, runtime_1.WireType.LengthDelimited).string(k).tag(2, runtime_1.WireType.LengthDelimited).string(message.meta[k]).join();
@@ -304,12 +296,6 @@ class Content$Type extends runtime_5.MessageType {
         /* string author_id = 10; */
         if (message.authorId !== "")
             writer.tag(10, runtime_1.WireType.LengthDelimited).string(message.authorId);
-        /* optional string slug = 11; */
-        if (message.slug !== undefined)
-            writer.tag(11, runtime_1.WireType.LengthDelimited).string(message.slug);
-        /* optional string placeholder = 12; */
-        if (message.placeholder !== undefined)
-            writer.tag(12, runtime_1.WireType.LengthDelimited).string(message.placeholder);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? runtime_2.UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

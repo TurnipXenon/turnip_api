@@ -58,13 +58,12 @@ message Content {
   string content = 3;
   optional string media = 4;
   repeated string tag_list = 5;
-  AccessDetails access_details = 6;
+  optional string slug = 6;
   map<string, string> meta = 7;
   string primary_id = 8;
   google.protobuf.Timestamp created_at = 9;
   string author_id = 10;
-  optional string slug = 11;
-  optional string placeholder = 12; // todo: reserve 12 to not break future versions
+  // note: we removed AccessDetails access_details = 6;
 }
 // endregion models
 
